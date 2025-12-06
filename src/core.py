@@ -2,6 +2,8 @@
 from typing import List, Dict, Tuple
 import pandas as pd
 from textblob import TextBlob
+import os
+import json
 
 # каждый отзыв
 Review = Dict[str, str]  # пример: {"text": "great!", "category": "movie"}
@@ -62,8 +64,31 @@ def analyze_reviews(reviews: List[Review]) -> List[AnalyzedReview]:  # прим�
 
 
 def compute_statistics(analyzed: List[AnalyzedReview]) -> Dict[str, int]:  # считает статистику
-    pass
+    statistics = {"positive": 0, "negative": 0, "neutral": 0}
+    for review in analyzed:
+        label = review.get("sentiment_label")
+        if label in statistics:
+            statistics[label] += 1
+    return statistics
 
 
 def export_results(analyzed: List[AnalyzedReview], output_dir: str) -> None:  # сохраняет результаты
-    pass
+    os.makedirs(output_dir, exist_ok=True)
+
+    # 1. csv с результатами
+    df = pd.DataFrame(analyzed)
+    df.to_csv(os.path.join(output_dir, "reviews_with_sentiment.csv"), index=False)
+
+    # 2. текстовый отчёт
+    stats = compute_statistics(analyzed)
+    report_path = os.path.join(output_dir, "sentiment_report.txt")
+    with open(report_path, "w", encoding="utf-8") as f:
+        f.write("Анализ тональности отзывов\n")
+        f.write("=" * 30 + "\n")
+        f.write(f"Всего отзывов: {sum(stats.values())}\n")
+        f.write(f"Позитивных: {stats['positive']}\n")
+        f.write(f"Негативных: {stats['negative']}\n")
+        f.write(f"Нейтральных: {stats['neutral']}\n")
+
+    print(f"Результаты были сохранены в папке {output_dir}")
+
