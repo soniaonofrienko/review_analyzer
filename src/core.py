@@ -1,6 +1,7 @@
 
 from typing import List, Dict, Tuple
 import pandas as pd
+from textblob import TextBlob
 
 # каждый отзыв
 Review = Dict[str, str]  # пример: {"text": "great!", "category": "movie"}
@@ -18,7 +19,7 @@ def load_reviews_from_csv(path: str) -> List[Review]:  # считывает от
     if 'review_text' not in df.columns:
         raise ValueError("Не удалось найти колонку 'review_text'")
 
-    # заменяем пропущенные знвчения на пустые строки и приводим все объекты к строкам
+    # заменяем пропущенные значения на пустые строки и приводим все объекты к строкам
     df = df.fillna("")
     df = df.astype(str)
 
@@ -27,11 +28,37 @@ def load_reviews_from_csv(path: str) -> List[Review]:  # считывает от
 
 
 def predict_sentiment(text: str) -> Tuple[float, str]:  # анализирует тональность одного отзыва
-    pass
+    if not isinstance(text, str) or not text.strip():
+        return 0.0, "neutral"
+
+    # определяем polarity
+    blob = TextBlob(text)
+    polarity = blob.sentiment.polarity  # от -1.0 до +1.0
+
+    # в зависимости от polarity присваиваем label
+    if polarity > 0.1:
+        label = "positive"
+    elif polarity < -0.1:
+        label = "negative"
+    else:
+        label = "neutral"
+
+    return polarity, label
 
 
 def analyze_reviews(reviews: List[Review]) -> List[AnalyzedReview]:  # применяет ко всем отзывам
-    pass
+    analyzed = []
+    for review in reviews:
+        # сохраняем исходный отзыв
+        new_review = review.copy()
+        # анализируем текст
+        text = review.get("review_text", "")
+        polarity, label = predict_sentiment(text)
+        # добавляем результаты
+        new_review["polarity"] = polarity
+        new_review["sentiment_label"] = label
+        analyzed.append(new_review)
+    return analyzed
 
 
 def compute_statistics(analyzed: List[AnalyzedReview]) -> Dict[str, int]:  # считает статистику
