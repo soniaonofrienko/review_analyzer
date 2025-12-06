@@ -1,5 +1,6 @@
 
 from typing import List, Dict, Tuple
+import pandas as pd
 
 # каждый отзыв
 Review = Dict[str, str]  # пример: {"text": "great!", "category": "movie"}
@@ -9,7 +10,20 @@ AnalyzedReview = Dict[str, object]  # {"text": "...", "polarity": 0.8, "label": 
 
 
 def load_reviews_from_csv(path: str) -> List[Review]:  # считывает отзывы
-    pass
+    try:
+        df = pd.read_csv(path)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Не удалось найти файл: {path}")
+
+    if 'review_text' not in df.columns:
+        raise ValueError("Не удалось найти колонку 'review_text'")
+
+    # заменяем пропущенные знвчения на пустые строки и приводим все объекты к строкам
+    df = df.fillna("")
+    df = df.astype(str)
+
+    # преобразуем в список словарей
+    return df.to_dict(orient='records')
 
 
 def predict_sentiment(text: str) -> Tuple[float, str]:  # анализирует тональность одного отзыва
