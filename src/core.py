@@ -1,9 +1,11 @@
 
 from typing import List, Dict, Tuple
 import pandas as pd
-from textblob import TextBlob
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import os
 import json
+
+_analyzer = SentimentIntensityAnalyzer()
 
 # каждый отзыв
 Review = Dict[str, str]  # пример: {"text": "great!", "category": "movie"}
@@ -30,22 +32,21 @@ def load_reviews_from_csv(path: str) -> List[Review]:  # считывает от
 
 
 def predict_sentiment(text: str) -> Tuple[float, str]:  # анализирует тональность одного отзыва
+
     if not isinstance(text, str) or not text.strip():
         return 0.0, "neutral"
 
-    # определяем polarity
-    blob = TextBlob(text)
-    polarity = blob.sentiment.polarity  # от -1.0 до +1.0
+    scores = _analyzer.polarity_scores(text)
+    compound = scores['compound']  # агрегированный скор от -1 до +1
 
-    # в зависимости от polarity присваиваем label
-    if polarity > 0.1:
+    if compound >= 0.2:
         label = "positive"
-    elif polarity < -0.1:
+    elif compound <= -0.25:
         label = "negative"
     else:
         label = "neutral"
 
-    return polarity, label
+    return compound, label
 
 
 def analyze_reviews(reviews: List[Review]) -> List[AnalyzedReview]:  # применяет ко всем отзывам
