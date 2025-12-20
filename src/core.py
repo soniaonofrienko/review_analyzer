@@ -2,8 +2,8 @@
 from typing import List, Dict, Tuple
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import matplotlib.pyplot as plt
 import os
-import json
 
 _analyzer = SentimentIntensityAnalyzer()
 
@@ -92,4 +92,20 @@ def export_results(analyzed: List[AnalyzedReview], output_dir: str) -> None:  # 
         f.write(f"Нейтральных: {stats['neutral']}\n")
 
     print(f"Результаты были сохранены в папке {output_dir}")
+
+
+def plot_sentiment_distribution(analyzed: List[Dict[str, object]],
+                                output_dir: str) -> None:
+    stats = compute_statistics(analyzed)
+    labels = list(stats.keys())
+    sizes = list(stats.values())
+    colors = ['#4CAF50', '#F44336', '#9E9E9E']  # green, red, gray
+
+    plt.figure(figsize=(6, 6))
+    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+    plt.title("Распределение тональности отзывов")
+    os.makedirs(output_dir, exist_ok=True)
+    plt.savefig(os.path.join(output_dir, "sentiment_pie.png"))
+    plt.close()
+    print(f"Диаграмма была сохранена: {os.path.join(output_dir, 'sentiment_pie.png')}")
 
