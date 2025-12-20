@@ -9,6 +9,7 @@ review_analyzer/
 ├── run_analysis.py
 ├── requirements.txt
 ├── README.md
+├── .gitignore
 ├── data/
 │   └── sample_reviews.csv
 └── src/
