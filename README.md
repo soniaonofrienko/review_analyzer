@@ -4,7 +4,7 @@
 Инструмент для анализа тональности текстовых отзывов из CSV-файла.
 
 ## Структура репозитория
-
+```
 review_analyzer/
 ├── run_analysis.py
 ├── requirements.txt
@@ -13,7 +13,7 @@ review_analyzer/
 │   └── sample_reviews.csv
 └── src/
     └── core.py
-
+```
 ## Инструкция по запуску
 
 1. Установите зависимости:
@@ -25,12 +25,12 @@ review_analyzer/
    python run_analysis.py
 
 ## Пример результата
-
+```
 Статистика тональности:
 ------------------------------
 Positive: 8 (66.7%)
 Negative: 3 (25.0%)
 Neutral: 1 (8.3%)
-
+```
 Результаты в виде текста и csv-файл сохраняются в папку output/.
 Также папке output/plots/ создаётся файл sentiment_pie.png с диаграммой.
