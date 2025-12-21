@@ -1,3 +1,5 @@
+# Нет докстрингов и аннотации типов
+
 from src.core import (
     load_reviews_from_csv,
     analyze_reviews,
@@ -5,12 +7,20 @@ from src.core import (
     export_results,
     plot_sentiment_distribution
 )
+# Правильный импорт (если бы у вас был модуль, для примера назову его `my_module`, и `run_analysis.py` находился бы под `src`):
+# from .my_module import (
+#     load_reviews_from_csv,
+#     analyze_reviews,
+#     compute_statistics,
+#     export_results,
+#     plot_sentiment_distribution
+# )
 
 
 def main():
     # загрузка
     print("Загрузка отзывов...")
-    reviews = load_reviews_from_csv("data/imdb_reviews.csv")
+    reviews = load_reviews_from_csv("data/imdb_reviews.csv")  # Не стоит фиксировать в коде название файла. Это должен задавать юзер
 
     # анализ
     print("Анализ тональности...")
