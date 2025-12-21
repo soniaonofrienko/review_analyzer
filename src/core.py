@@ -1,5 +1,6 @@
+# Импорты не отсортированы, нет докстрингов и аннотации типов
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple  # Такой способ аннотации типа устарел. Вместо него используйте 'list[...]' / `dict[..., ...]` / `tuple[...]`
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
@@ -72,7 +73,7 @@ def analyze_reviews(reviews: List[Review]) -> List[AnalyzedReview]:
         text = review.get("review_text", "")
         polarity, label = predict_sentiment(text)
         # добавляем результаты
-        new_review["polarity"] = polarity
+        new_review["polarity"] = polarity  # Expected type 'str' (matched generic type '_VT'), got 'float' instead
         new_review["sentiment_label"] = label
         analyzed.append(new_review)
     return analyzed
